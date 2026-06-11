@@ -64,7 +64,7 @@ app.post("/chat", async (req, res) => {
   }
 });
 app.get("/", (req, res) => {
-  res.send("CMO IA Online 🚀");
+  res.send("Flow IA Online 🚀");
 });
 const PORT = process.env.PORT || 3000;
 
