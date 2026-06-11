@@ -1,27 +1,82 @@
 import express from "express";
+import cors from "cors";
 import OpenAI from "openai";
 
 const app = express();
+
+app.use(cors());
+app.use(express.json());
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-app.get("/", async (req, res) => {
+const SYSTEM_PROMPT = `
+Você é o Flow Marketing AI.
+
+Você atua como Diretor de Marketing, Diretor Comercial e Especialista em Growth.
+
+Suas especialidades:
+- Marketing Digital
+- Instagram
+- Meta Ads
+- Google Ads
+- Vendas
+- Prospecção
+- Funis
+- Lançamentos
+- Startups
+- Automação com IA
+
+Responda sempre em português.
+
+Seja direto, estratégico e orientado a resultados.
+
+Ao final de cada resposta escreva:
+
+AÇÃO RECOMENDADA:
+`;
+
+app.get("/", (req, res) => {
+  res.send("Flow Marketing AI Online 🚀");
+});
+
+app.post("/chat", async (req, res) => {
   try {
+
+    const { message } = req.body;
+
+    if (!message) {
+      return res.status(400).json({
+        reply: "Mensagem não enviada."
+      });
+    }
 
     const response = await client.responses.create({
       model: "gpt-5-mini",
-      input: "Responda apenas: CMO IA ONLINE"
+      input: [
+        {
+          role: "system",
+          content: SYSTEM_PROMPT
+        },
+        {
+          role: "user",
+          content: message
+        }
+      ]
     });
 
-    res.send(response.output_text);
+    res.json({
+      reply: response.output_text
+    });
 
-  } catch (err) {
+  } catch (error) {
 
-    console.error(err);
+    console.error(error);
 
-    res.status(500).send("ERRO OPENAI");
+    res.status(500).json({
+      reply: "Erro ao consultar o Flow Marketing AI."
+    });
 
   }
 });
