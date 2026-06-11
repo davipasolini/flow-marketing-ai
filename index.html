@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>CMO IA</title>
+</head>
+<body>
+
+<h1>CMO IA</h1>
+
+<input id="msg" placeholder="Digite sua pergunta">
+<button onclick="enviar()">Enviar</button>
+
+<div id="resposta"></div>
+
+<script>
+async function enviar() {
+
+  const texto = document.getElementById("msg").value;
+
+  const res = await fetch(
+    "https://SEU-SERVICO.onrender.com/chat",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: texto
+      })
+    }
+  );
+
+  const data = await res.json();
+
+  document.getElementById("resposta").innerText =
+    data.reply;
+}
+</script>
+
+</body>
+</html>
